@@ -13,9 +13,13 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "bcrypt-nodejs": "0.0.3",
+    "connect-flash": "^0.1.1",
     "express": "^4.16.4",
     "mongoose": "^5.4.14",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.3.3",

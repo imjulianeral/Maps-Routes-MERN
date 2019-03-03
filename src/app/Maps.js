@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { fdatasync } from 'fs';
 
 class Maps extends Component {
     constructor() {
@@ -20,7 +19,7 @@ class Maps extends Component {
 
     addCamion(e) {
         if (this.state._id) {
-            fetch(`/api/camiones/${this.state._id}`, {
+            fetch(`/camiones/${this.state._id}`, {
                 method: 'PUT',
                 body: JSON.stringify(this.state),
                 headers: {
@@ -44,7 +43,7 @@ class Maps extends Component {
               })
               .catch(err => console.log(err));
         }else {
-            fetch('/api/camiones', {
+            fetch('/camiones', {
                 method: 'POST',
                 body: JSON.stringify(this.state),
                 headers: {
@@ -71,7 +70,7 @@ class Maps extends Component {
     }
 
     fetchCamiones() {
-        fetch('/api/camiones')
+        fetch('/camiones')
             .then(res => res.json())
             .then(data => {
                 this.setState({camiones: data.camiones});
@@ -81,7 +80,7 @@ class Maps extends Component {
 
     deleteCamion(id) {
         if (confirm('¿Estas seguro de querer eliminar este camión?')) {
-            fetch(`/api/camiones/${id}`, {
+            fetch(`/camiones/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -98,7 +97,7 @@ class Maps extends Component {
     }
 
     editCamion(id) {
-        fetch(`/api/camiones/${id}`)
+        fetch(`/camiones/${id}`)
             .then(res => res.json())
             .then(data => {
                 this.setState({
@@ -175,17 +174,20 @@ class Maps extends Component {
             <div>
                 
                 <div className="container">
-                    <div className="card">
+                    <div className="card hoverable">
                         <form onSubmit={this.addCamion}>
                             <div className="row">
                                 <div className="input-field col s2">
-                                    <input type="text" placeholder="Placas" name="placas" onChange={this.handleChange} value={this.state.placas}/>
+                                    <input type="text" name="placas" id="placas" onChange={this.handleChange} value={this.state.placas}/>
+                                    <label for="placas">Placas</label>
                                 </div>
                                 <div className="input-field col s5">
-                                    <input type="text" placeholder="Punto de Partida" name="partida" onChange={this.handleChange} value={this.state.partida} />                                    
+                                    <input type="text" id="partida" name="partida" onChange={this.handleChange} value={this.state.partida} />                                    
+                                    <label for="partida">Punto de Partida</label>
                                 </div>
                                 <div className="input-field col s5">
-                                    <input type="text" placeholder="Destino" name="destino" onChange={this.handleChange} value={this.state.destino} />                                    
+                                    <input type="text" id="destino" name="destino" onChange={this.handleChange} value={this.state.destino} />                                    
+                                    <label for="destino">Destino</label>
                                 </div>
                                 <div className="input-field col s3">
                                     <input className="datepicker" type="text" placeholder="Fecha" name="fecha" onSelect={this.handleChange} value={this.state.fecha} />                                    
@@ -238,7 +240,7 @@ class Maps extends Component {
                                 }
                             </tbody>
                         </table>
-                        <div className="card col s4" style={{position:'sticky', top: '0'}}>
+                        <div className="card col s4 hoverable" style={{position:'sticky', top: '0'}}>
                             <h5>Mapa</h5>
                             <div style={{width: '100%', height: '300px', marginBottom: '10px'}} className="map"></div>                         
                         </div>

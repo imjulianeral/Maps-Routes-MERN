@@ -8,6 +8,7 @@ const Nav = () => {
                 <NavLink className="brand-logo" to={'/'}>RAEE</NavLink>
                 <ul className="right hide-on-med-and-down">
                     <li><NavLink to={'/camiones'}>Camiones</NavLink></li>
+                    <li><NavLink to={'/login'}>Login</NavLink></li>
                 </ul>
             </div>
         </nav>

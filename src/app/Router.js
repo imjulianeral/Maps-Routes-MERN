@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Maps from './Maps';
 import Nav from './Nav';
+import Login from './Login';
 
 export default class Router extends Component {
   render() {
@@ -13,6 +14,7 @@ export default class Router extends Component {
             <Switch>
                 <Route exact path="/" component={Maps} />
                 <Route exact path="/camiones" component={Maps} />
+                <Route exact path="/login" component={Login} />
             </Switch>
         </div>
       </BrowserRouter>
