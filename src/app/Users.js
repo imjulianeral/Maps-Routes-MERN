@@ -4,14 +4,14 @@ class Users extends Component {
     constructor() {
         super();
         this.state = {
-            placas: '',
-            partida: '',
+            name: '',
+            email: '',
             destino: '',
             fecha: '',
             entrada: '',
             salida: '',
-            _id: '',
-            camiones: []
+            usuarios: [],
+            _id: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.addCamion = this.addCamion.bind(this);
@@ -59,7 +59,7 @@ class Users extends Component {
                       destino: '',
                       fecha: '',
                       entrada: '',
-                      salida: '',
+                      salida: ''
                     });
                   this.fetchCamiones();
               })
@@ -69,11 +69,11 @@ class Users extends Component {
         e.preventDefault();
     }
 
-    fetchCamiones() {
-        fetch('/camiones')
+    fetchUsers() {
+        fetch('/usuarios')
             .then(res => res.json())
             .then(data => {
-                this.setState({camiones: data.camiones});
+                this.setState({usuarios: data.usuarios});
             })
             .catch(err => console.log(err))
     }

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt-nodejs');
 const { Schema } = mongoose;
 
 const UserSessionSchema = new Schema({
-    userID: { type: Number, default: -1 },
+    userID: { type: String, default: '' },
     timestamp: { type: Date, default: Date.now() },
     isDeleted: { type: Boolean, default: false }
 });
