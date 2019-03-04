@@ -9,6 +9,7 @@ const Nav = () => {
                 <ul className="right hide-on-med-and-down">
                     <li><NavLink to={'/camiones'}>Camiones</NavLink></li>
                     <li><NavLink to={'/login'}>Login</NavLink></li>
+                    <li><NavLink to={'/usuarios'}>Usuarios</NavLink></li>
                 </ul>
             </div>
         </nav>

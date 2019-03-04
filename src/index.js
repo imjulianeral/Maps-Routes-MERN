@@ -13,7 +13,7 @@ app.use(express.json());
 
 // Routes
 app.use('/camiones', require('./routes/camiones.routes'));
-// app.use('/signin', require('./routes/login.routes'));
+app.use('/usuarios', require('./routes/login.routes'));
 
 // Static Files
 app.use(express.static(path.join(__dirname, 'public')));

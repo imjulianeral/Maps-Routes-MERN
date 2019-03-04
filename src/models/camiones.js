@@ -7,8 +7,7 @@ const CamionesSchema = new Schema({
     destino: { type: String },
     fecha: { type: String },
     entrada: { type: String },
-    salida: { type: String },
-    entradas: { type: Number }
+    salida: { type: String }
 });
 
 module.exports = mongoose.model('Camiones', CamionesSchema);
