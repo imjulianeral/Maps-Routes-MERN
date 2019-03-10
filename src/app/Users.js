@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import jwt_decode from 'jwt-decode';
+import Nav from './Nav';
 
 class Users extends Component {
     constructor() {
@@ -6,67 +8,14 @@ class Users extends Component {
         this.state = {
             name: '',
             email: '',
-            destino: '',
-            fecha: '',
-            entrada: '',
-            salida: '',
+            type: '', 
+            password: '',           
             usuarios: [],
-            _id: ''
+            _id: '',
+            typeJWT: ''
         };
         this.handleChange = this.handleChange.bind(this);
-        this.addCamion = this.addCamion.bind(this);
-    }
-
-    addCamion(e) {
-        if (this.state._id) {
-            fetch(`/camiones/${this.state._id}`, {
-                method: 'PUT',
-                body: JSON.stringify(this.state),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-              .then(res => res.json())
-              .then(data => {
-                M.toast({ html: data.status });
-                this.setState({ 
-                    placas: '',
-                    partida: '',
-                    destino: '',
-                    fecha: '',
-                    entrada: '',
-                    salida: '',
-                    _id: ''
-                  });
-                this.fetchCamiones();
-              })
-              .catch(err => console.log(err));
-        }else {
-            fetch('/camiones', {
-                method: 'POST',
-                body: JSON.stringify(this.state),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            }).then(res => res.json())
-              .then(data => {
-                  M.toast({ html: data.status });
-                  this.setState({ 
-                      placas: '',
-                      partida: '',
-                      destino: '',
-                      fecha: '',
-                      entrada: '',
-                      salida: ''
-                    });
-                  this.fetchCamiones();
-              })
-              .catch(err => console.log(err));
-        }
-
-        e.preventDefault();
+        this.addUser = this.addUser.bind(this);
     }
 
     fetchUsers() {
@@ -76,11 +25,35 @@ class Users extends Component {
                 this.setState({usuarios: data.usuarios});
             })
             .catch(err => console.log(err))
+    }    
+
+    addUser(e) {
+        fetch('/usuarios/register', {
+            method: 'POST',
+            body: JSON.stringify(this.state),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json())
+          .then(data => {
+              M.toast({ html: data.status });    
+              this.setState({ 
+                name: '',
+                email: '',
+                type: '', 
+                password: ''
+              });
+              this.fetchUsers();
+          })
+          .catch(err => console.log(err));
+
+          e.preventDefault();
     }
 
-    deleteCamion(id) {
-        if (confirm('¿Estas seguro de querer eliminar este camión?')) {
-            fetch(`/camiones/${id}`, {
+    deleteUser(id) {
+        if (confirm('¿Estas seguro de querer eliminar este usuario?')) {
+            fetch(`/usuarios/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -90,27 +63,10 @@ class Users extends Component {
              .then(res => res.json())
              .then(data => {
                 M.toast({ html: data.status });            
-                this.fetchCamiones();
+                this.fetchUsers();
              })
              .catch(err => console.log(err));
         } 
-    }
-
-    editCamion(id) {
-        fetch(`/camiones/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                this.setState({
-                    placas: data.camion.placas,
-                    partida: data.camion.partida,
-                    destino: data.camion.destino,
-                    fecha: data.camion.fecha,
-                    entrada: data.camion.entrada,
-                    salida: data.camion.salida,
-                    _id: data.camion._id
-                });
-            })
-            .catch(err => console.log(err));
     }
 
     handleChange(e) {
@@ -118,34 +74,57 @@ class Users extends Component {
         this.setState({
             [name]: value
         });
-    }    
+    }
+
+    initSelect() {
+        let elems = document.querySelectorAll('select');
+        let instances = M.FormSelect.init(elems);
+    }   
+
+    decode() {
+        const token = localStorage.usertoken;
+        const decoded = jwt_decode(token);
+        this.setState({
+            typeJWT: decoded.type
+        });
+    }
 
     componentDidMount() {
-        
+        this.fetchUsers();
+        this.initSelect();
+        this.decode();
     }
     render() {
         return (
             <div>
-                
+                <Nav type={this.state.typeJWT} />
                 <div className="container">
                     <div className="row">
                         <div className="col s4 card hoverable">
-                            <form onSubmit>
+                            <form onSubmit={this.addUser}>
                                 <div className="row">
                                     <div className="input-field col s12">
-                                        <input type="text" name="name" id="name"/>
-                                        <label for="name">Nombre</label>
+                                        <input type="text" name="name" id="name" onChange={this.handleChange} value={this.state.name}/>
+                                        <label htmlFor="name">Nombre</label>
                                     </div>
                                     <div className="input-field col s12">
-                                        <input type="email" id="email" name="email"/>                                    
-                                        <label for="email">Correo</label>
+                                        <input type="email" id="email" name="email" onChange={this.handleChange} value={this.state.email}/>                                    
+                                        <label htmlFor="email">Correo</label>
                                     </div>
                                     <div className="input-field col s12">
-                                        <input type="password" id="password" name="password"/>                                    
-                                        <label for="password">Contraseña</label>
+                                        <input type="password" id="password" name="password" onChange={this.handleChange} value={this.state.password}/>                                    
+                                        <label htmlFor="password">Contraseña</label>
+                                    </div>
+                                    <div className="input-field col s12">
+                                        <select onChange={this.handleChange} value={this.state.type} name="type">
+                                            <option value="" disabled defaultValue>Escoge un tipo de usuario</option>
+                                            <option value="ADMIN">ADMIN</option>
+                                            <option value="EMPLEADO">EMPLEADO</option>
+                                        </select>
+                                        <label>Tipo de usuario</label>
                                     </div>
                                     <div className="row center-align">
-                                        <button type="submit" className="btn light-blue darken-4">{(this.state._id)?'Actualizar':'Agregar'}</button>                                
+                                        <button type="submit" className="btn light-blue darken-4">Agregar</button>                                
                                     </div>
                                 </div>
                             </form>
@@ -161,20 +140,15 @@ class Users extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    this.state.camiones.map(camion => {
+                                    this.state.usuarios.map(usuario => {
                                         return (
-                                            <tr key={camion._id}>
-                                                <td>{camion.placas}</td>
-                                                <td>{camion.fecha}</td>
+                                            <tr key={usuario._id}>
+                                                <td>{usuario.name}</td>
+                                                <td>{usuario.email}</td>
+                                                <td>{usuario.type}</td>
                                                 <td>
-                                                    <button className="btn yellow accent-2" style={{margin:'5px'}} onClick={() => this.editCamion(camion._id)}>
-                                                        <i className="material-icons" style={{color: '#000'}}>edit</i>
-                                                    </button>
-                                                    <button className="btn red accent-4"  style={{margin:'5px'}} onClick={() => this.deleteCamion(camion._id)}>
+                                                    <button className="btn red accent-4"  style={{margin:'5px'}} onClick={() => this.deleteUser(usuario._id)}>
                                                         <i className="material-icons">delete</i>
-                                                    </button>
-                                                    <button className="btn green accent-4" style={{margin:'5px'}} onClick={() => this.maps(camion.partida, camion.destino)}>
-                                                        <i className="material-icons">map</i>
                                                     </button>
                                                 </td>
                                             </tr>

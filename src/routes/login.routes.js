@@ -1,7 +1,78 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-const UserSession = require('../models/userSession');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+
+
+router.use(cors());
+
+process.env.SECRET_KEY = 'mysecret';
+
+router.post('/register', (req, res) => {
+    const userData = {
+        email: req.body.email,
+        name: req.body.name,
+        type: req.body.type,
+        password: req.body.password
+    };
+
+    User.findOne({ email: userData.email })
+        .then(user => {
+            if (!user) {
+                const newUser = new User();
+                userData.password = newUser.encryptPassword(userData.password);
+                User.create(userData)
+                    .then(user => {
+                        res.json({status: 'Nuevo usuario creado'})
+                    })
+                    .catch(err => res.send(err));               
+            } else {
+                res.json({status: 'El correo ya ha sido registrado en el sistema'});
+            }
+        })
+        .catch(err => res.send(err)); 
+});
+
+router.post('/login', (req, res) => {
+    User.findOne({ email: req.body.email })
+        .then(user => {
+            if (user) {
+                const userLogin = new User();
+                userLogin.password = user.password;
+                if (userLogin.checkPassword(req.body.password)) {
+                    const payload = {
+                        _id: user._id,
+                        name: user.name,
+                        type: user.type,
+                        email: user.email
+                    };
+                    let token = jwt.sign(payload, process.env.SECRET_KEY, {
+                        expiresIn: 1440
+                    });
+                    res.send(token);
+                } else {
+                    res.json({ status: 'La contraseña es incorrecta' });
+                }
+            } else {
+                res.json({ status: 'El email es incorrecto' });
+            }
+        })
+        .catch(err => res.send(err));
+});
+
+router.get('/profile', (req, res) => {
+    let decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY);
+    User.findOne({ _id: decoded._id })
+        .then(user => {
+            if (user) {
+                res.json(user);
+            } else {
+                res.send('Usuario no existe');
+            }
+        })
+        .catch(err => res.send(err));
+})
 
 router.get('/', async(req, res) => {
     const usuarios = await User.find();
@@ -10,183 +81,17 @@ router.get('/', async(req, res) => {
     });
 });
 
+router.delete('/:id', async(req, res) => {
+    await User.findByIdAndRemove(req.params.id);
+    res.json({status: 'Usuario Eliminado'});
+});
 
-router.post('/registrar', (req, res, next) => {
-    const { body } = req;
-    const { password, name, type } = body;
-    let { email } = body;
-
-    if (!email) {
-        return res.send({
-            success: false,
-            message: 'Error: email no puede estar vacio'
-        });
-    } 
-    if (!password) {
-        return res.send({
-            success: false,
-            message: 'Error: contraseña no puede estar vacio'
-        });
-    } 
-    if (!name) {
-        return res.send({
-            success: false,
-            message: 'Error: nombre no puede estar vacio'
-        });
-    } 
-    if (!type) {
-        return res.send({
-            success: false,
-            message: 'Error: tipo no puede estar vacio'
-        });
+function isAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        return null;
     }
-
-    email.trim();
-
-    User.find({ email }, (err, previousUsers) => {
-        if (err) {
-            return res.send({
-                success: false,
-                message:'Error: Server error'
-            });
-        } else if (previousUsers.length > 0) {
-            return res.send({
-                success: false,
-                message:'Error: El correo ya ha sido registrado en el sistema'
-            });
-        }
-
-        const newUser = new User();
-        newUser.email = email;
-        newUser.name = name;
-        newUser.type = type;
-        newUser.password = newUser.encryptPassword(password);
-        newUser.save((err, user) => {
-            if (err) {
-                return res.send({
-                    success: false,
-                    message:'Error: Server error'
-                });
-            }
-
-            return res.send({
-                success: true,
-                message:'Usuario registrado'
-            });
-        })
-    })
-});
-
-
-router.get('/logout', async(req, res, next) => {
-    const { query } = req;
-    const { token } = query;
-
-    UserSession.findOneAndUpdate({
-        _id: token,
-        isDeleted: false
-    }, {
-        $set: { isDeleted: true }
-    }, null, (err, sessions) => {
-        if (err) {
-            return res.send({
-                success: false,
-                message:'Error: Server error'
-            });
-        }
-            
-        return res.send({
-            success: true,
-            message:'Ha cerrado la sesión'
-        });                
-             
-    });
-});
-
-router.get('/verificar', async(req, res, next) => {
-    const { query } = req;
-    const { token } = query;
-
-    UserSession.find({
-        _id: token,
-        isDeleted: false
-    }, (err, sessions) => {
-        if (err) {
-            return res.send({
-                success: false,
-                message:'Error: Server error'
-            });
-        }
-
-        if (sessions.length != 1) {
-            return res.send({
-                success: false,
-                message:'Error: No ha iniciado sesión'
-            });
-        } else {
-            return res.send({
-                success: true,
-                message:'Ha iniciado sesión'
-            });                
-        }        
-    });
-});
-
-router.post('/signin', async(req, res, next) => {
-    const { body } = req;
-    const { password, name, type } = body;
-    let { email } = body;
-
-    if (!email) {
-        return res.send({
-            success: false,
-            message: 'Error: email no puede estar vacio'
-        });
-    } 
-    if (!password) {
-        return res.send({
-            success: false,
-            message: 'Error: contraseña no puede estar vacio'
-        });
-    }
-
-    User.find({ email }, (err, users) => {
-        if (err) {
-            return res.send({
-                success: false,
-                message:'Error: Server error'
-            });
-        }else if (users.length != 1) {
-            return res.send({
-                success: false,
-                message:'Error: El usuario no existe'
-            });
-        }
-
-        const user = users[0];
-        if (!user.checkPassword(password)) {
-            return res.send({
-                success: false,
-                message:'Error: Contraseña invalida'
-            });
-        }
-
-        const userSession = new UserSession();
-        userSession.userID = user._id;
-        userSession.save((err, doc) => {
-            if (err) {
-                return res.send({
-                    success: false,
-                    message:'Error: Server error'
-                });
-            }
-            return res.send({
-                success: true,
-                message:'Inicio de sesión correcto',
-                token: doc._id
-            });
-        });
-    });
-});
+}
 
 module.exports = router;

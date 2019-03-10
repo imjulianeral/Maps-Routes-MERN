@@ -3,13 +3,17 @@ const app = express();
 const morgan = require('morgan');
 const path = require('path');
 const { mongoose } = require('./db');
+const session = require('express-session');
+const cors = require('cors');
 
 // Settings
 app.set('port', process.env.PORT || 3000);
 
 // Middlewares
 app.use(morgan('dev'));
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use('/camiones', require('./routes/camiones.routes'));

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import jwt_decode from 'jwt-decode';
+import Nav from './Nav';
 
 class Maps extends Component {
     constructor() {
@@ -11,7 +13,8 @@ class Maps extends Component {
             entrada: '',
             salida: '',
             _id: '',
-            camiones: []
+            camiones: [],
+            type: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.addCamion = this.addCamion.bind(this);
@@ -59,7 +62,7 @@ class Maps extends Component {
                       destino: '',
                       fecha: '',
                       entrada: '',
-                      salida: '',
+                      salida: ''
                     });
                   this.fetchCamiones();
               })
@@ -168,26 +171,32 @@ class Maps extends Component {
     componentDidMount() {
         this.pickers();
         this.fetchCamiones();
+        const token = localStorage.usertoken;   
+        const decoded = jwt_decode(token);
+        this.setState({
+            type: decoded.type
+        });
+        
     }
     render() {
         return (
             <div>
-                
+                <Nav type={this.state.type} />
                 <div className="container">
                     <div className="card hoverable">
                         <form onSubmit={this.addCamion}>
                             <div className="row">
                                 <div className="input-field col s2">
                                     <input type="text" name="placas" id="placas" onChange={this.handleChange} value={this.state.placas}/>
-                                    <label for="placas">Placas</label>
+                                    <label htmlFor="placas">Placas</label>
                                 </div>
                                 <div className="input-field col s5">
                                     <input type="text" id="partida" name="partida" onChange={this.handleChange} value={this.state.partida} />                                    
-                                    <label for="partida">Punto de Partida</label>
+                                    <label htmlFor="partida">Punto de Partida</label>
                                 </div>
                                 <div className="input-field col s5">
                                     <input type="text" id="destino" name="destino" onChange={this.handleChange} value={this.state.destino} />                                    
-                                    <label for="destino">Destino</label>
+                                    <label htmlFor="destino">Destino</label>
                                 </div>
                                 <div className="input-field col s3">
                                     <input className="datepicker" type="text" placeholder="Fecha" name="fecha" onSelect={this.handleChange} value={this.state.fecha} />                                    
@@ -227,9 +236,14 @@ class Maps extends Component {
                                                     <button className="btn yellow accent-2" style={{margin:'5px'}} onClick={() => this.editCamion(camion._id)}>
                                                         <i className="material-icons" style={{color: '#000'}}>edit</i>
                                                     </button>
-                                                    <button className="btn red accent-4"  style={{margin:'5px'}} onClick={() => this.deleteCamion(camion._id)}>
-                                                        <i className="material-icons">delete</i>
-                                                    </button>
+                                                    { 
+                                                    this.state.type === 'ADMIN' ? 
+                                                        <button className="btn red accent-4"  style={{margin:'5px'}} onClick={() => this.deleteCamion(camion._id)}>
+                                                            <i className="material-icons">delete</i>
+                                                        </button>
+                                                    :
+                                                        null 
+                                                    }
                                                     <button className="btn green accent-4" style={{margin:'5px'}} onClick={() => this.maps(camion.partida, camion.destino)}>
                                                         <i className="material-icons">map</i>
                                                     </button>

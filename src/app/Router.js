@@ -11,9 +11,8 @@ export default class Router extends Component {
     return (
       <BrowserRouter>
         <div>            
-            <Nav/>
             <Switch>
-                <Route exact path="/" component={Maps} />
+                <Route exact path="/" component={Login} />
                 <Route exact path="/camiones" component={Maps} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/usuarios" component={Users} />

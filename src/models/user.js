@@ -6,8 +6,7 @@ const UserSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String },
     name: { type: String },
-    type: { type: String },
-    isDeleted: { type: Boolean, default: false }
+    type: { type: String }
 });
 
 UserSchema.methods.encryptPassword = (password) => {
