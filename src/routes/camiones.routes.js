@@ -40,4 +40,5 @@ router.delete('/', async(req, res) => {
     res.json({status: 'todos los registros fueron eliminados'});
 });
 
+
 module.exports = router;

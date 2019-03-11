@@ -5,6 +5,7 @@ const path = require('path');
 const { mongoose } = require('./db');
 const session = require('express-session');
 const cors = require('cors');
+const router = express.Router();
 
 // Settings
 app.set('port', process.env.PORT || 3000);
@@ -21,6 +22,9 @@ app.use('/usuarios', require('./routes/login.routes'));
 
 // Static Files
 app.use(express.static(path.join(__dirname, 'public')));
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'public/index.html'));
+// });
 
 // Starting Server
 app.listen(app.get('port'), () => {
