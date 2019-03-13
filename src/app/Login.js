@@ -27,7 +27,10 @@ class Login extends Component {
         }
         login(user)
             .then(res => {
-                if (res) {
+                if (res.status) {
+                    M.toast({ html: res.status });   
+                    localStorage.removeItem('usertoken');
+                } else {
                     this.props.history.push('/camiones');
                 }
             });

@@ -52,10 +52,10 @@ router.post('/login', (req, res) => {
                     });
                     res.send(token);
                 } else {
-                    res.json({ status: 'La contraseña es incorrecta' });
+                    res.json({ status: 'Usuario no existe' });
                 }
             } else {
-                res.json({ status: 'El email es incorrecto' });
+                res.json({ status: 'Usuario no existe' });
             }
         })
         .catch(err => res.send(err));
@@ -75,6 +75,7 @@ router.get('/profile', (req, res) => {
 })
 
 router.get('/', async(req, res) => {
+    
     const usuarios = await User.find();
     res.json({
         usuarios

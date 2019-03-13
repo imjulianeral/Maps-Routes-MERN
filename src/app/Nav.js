@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { getFromStorage, setInStorage } from './utils/storage';
 import { NavLink, withRouter } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
 
 class Nav extends Component {
     constructor() {

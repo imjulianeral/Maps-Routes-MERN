@@ -39,5 +39,6 @@
     "react-router-dom": "^4.3.1",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3"
-  }
+  },
+  "proxy":"http://localhost:3000"
 }

@@ -22,7 +22,7 @@ class Maps extends Component {
 
     addCamion(e) {
         if (this.state._id) {
-            fetch(`/camiones/${this.state._id}`, {
+            fetch(`/api/camiones/${this.state._id}`, {
                 method: 'PUT',
                 body: JSON.stringify(this.state),
                 headers: {
@@ -46,7 +46,7 @@ class Maps extends Component {
               })
               .catch(err => console.log(err));
         }else {
-            fetch('/camiones', {
+            fetch('/api/camiones', {
                 method: 'POST',
                 body: JSON.stringify(this.state),
                 headers: {
@@ -73,7 +73,7 @@ class Maps extends Component {
     }
 
     fetchCamiones() {
-        fetch('/camiones')
+        fetch('/api/camiones')
             .then(res => res.json())
             .then(data => {
                 this.setState({camiones: data.camiones});
@@ -83,7 +83,7 @@ class Maps extends Component {
 
     deleteCamion(id) {
         if (confirm('¿Estas seguro de querer eliminar este camión?')) {
-            fetch(`/camiones/${id}`, {
+            fetch(`/api/camiones/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -100,7 +100,7 @@ class Maps extends Component {
     }
 
     editCamion(id) {
-        fetch(`/camiones/${id}`)
+        fetch(`/api/camiones/${id}`)
             .then(res => res.json())
             .then(data => {
                 this.setState({
@@ -173,6 +173,7 @@ class Maps extends Component {
         this.fetchCamiones();
         const token = localStorage.usertoken;   
         const decoded = jwt_decode(token);
+        
         this.setState({
             type: decoded.type
         });

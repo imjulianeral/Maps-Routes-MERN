@@ -2,7 +2,7 @@ import Axios from "axios";
 
 export const login = user => {
     return Axios
-        .post('/usuarios/login', {
+        .post('/api/usuarios/login', {
             email: user.email,
             password: user.password
         })

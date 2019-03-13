@@ -19,7 +19,7 @@ class Users extends Component {
     }
 
     fetchUsers() {
-        fetch('/usuarios')
+        fetch('/api/usuarios')
             .then(res => res.json())
             .then(data => {
                 this.setState({usuarios: data.usuarios});
@@ -28,7 +28,7 @@ class Users extends Component {
     }    
 
     addUser(e) {
-        fetch('/usuarios/register', {
+        fetch('/api/usuarios/register', {
             method: 'POST',
             body: JSON.stringify(this.state),
             headers: {
@@ -53,7 +53,7 @@ class Users extends Component {
 
     deleteUser(id) {
         if (confirm('¿Estas seguro de querer eliminar este usuario?')) {
-            fetch(`/usuarios/${id}`, {
+            fetch(`/api/usuarios/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',

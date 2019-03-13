@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Maps from './Maps';
-import Nav from './Nav';
 import Login from './Login';
 import Users from './Users';
 

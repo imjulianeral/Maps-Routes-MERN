@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Camiones = require('../models/camiones');
 
-router.get('/', async(req, res) => {
+router.get('/', async(req, res) => {    
     const camiones = await Camiones.find();
+    
     res.json({
         camiones
     });
