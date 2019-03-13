@@ -3,11 +3,16 @@ const router = express.Router();
 const User = require('../models/user');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-
-
 router.use(cors());
 
-process.env.SECRET_KEY = 'mysecret';
+let key;
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+
+if (process.env.NODE_ENV === 'dev') {
+    key = 'mysecret';
+} else {
+    key = process.env.SECRET_KEY;
+}
 
 router.post('/register', (req, res) => {
     const userData = {
@@ -47,7 +52,7 @@ router.post('/login', (req, res) => {
                         type: user.type,
                         email: user.email
                     };
-                    let token = jwt.sign(payload, process.env.SECRET_KEY, {
+                    let token = jwt.sign(payload, key, {
                         expiresIn: 1440
                     });
                     res.send(token);
@@ -62,7 +67,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/profile', (req, res) => {
-    let decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY);
+    let decoded = jwt.verify(req.headers['authorization'], key);
     User.findOne({ _id: decoded._id })
         .then(user => {
             if (user) {

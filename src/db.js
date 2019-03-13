@@ -1,8 +1,19 @@
 const mongoose = require('mongoose');
 
-const URI = 'mongodb+srv://jorge:jjalcs5x17798@cluster0-msfrl.mongodb.net/test?retryWrites=true';
-mongoose.connect(URI, { useNewUrlParser: true })
-        .then(db => console.log('DB Connected'))
+// Environment
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+
+// DB
+let urlDB;
+
+if (process.env.NODE_ENV === 'dev') {
+    urlDB = 'mongodb://localhost:27017/raee';
+} else {
+    urlDB = process.env.MONGO_URI;
+}
+
+mongoose.connect(urlDB, { useNewUrlParser: true })
+        .then(db => console.log('DB Connected ' + process.env.NODE_ENV))
         .catch(err => console.error(err));
 
 module.exports = mongoose;
