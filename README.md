@@ -22,5 +22,15 @@ La app se compone de 3 componentes: **Login**, **Camiones**, **Gestion de usuari
 ![users](img/users.png)
 
 **Funcionamiento:**
-![works](img/works.gif)
+[RAEE System](https://raee-system.herokuapp.com/).
+*Credenciales:*
+Administrador:
+- E-MAIL: admin@email.com
+- PASSWORD: 456
+
+Empleado:
+- E-MAIL: empleado@email.com
+- PASSWORD: 456
+
+![works](img/dem.gif)
 *(tiene una mala calidad debido a la compresión)*
