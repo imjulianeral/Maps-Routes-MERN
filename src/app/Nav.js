@@ -32,8 +32,8 @@ class Nav extends Component {
         <NavLink className="brand-logo" to={"/camiones"}>
           <img src={logo} width="60px" />
         </NavLink>
-        <ul className="right hide-on-med-and-down">
-        <li>
+        <ul className="right hide-on-med-and-down" >
+          <li>
             <NavLink
               to={"/login"}
               onClick={this.logOut}
@@ -44,7 +44,7 @@ class Nav extends Component {
                 <i className="material-icons">person_pin</i>
             </NavLink>
           </li>            
-          <li>
+          <li activeClassName="active">
             <NavLink to={"/camiones"}>Camiones</NavLink>
           </li>
           <li>

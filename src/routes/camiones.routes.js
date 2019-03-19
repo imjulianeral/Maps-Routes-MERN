@@ -38,7 +38,7 @@ router.delete('/:id', async(req, res) => {
 
 router.delete('/', async(req, res) => {
     await Camiones.remove();
-    res.json({status: 'todos los registros fueron eliminados'});
+    res.json({status: 'TODOS los camiones fueron eliminados'});
 });
 
 

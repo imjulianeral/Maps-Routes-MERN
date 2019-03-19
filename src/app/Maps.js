@@ -99,6 +99,20 @@ class Maps extends Component {
         } 
     }
 
+    deleteAll() {
+        if (confirm('¿Estas seguro de querer eliminar TODOS los camiones?')) {
+            fetch(`/api/camiones/`, {
+                method: 'DELETE'
+            })
+             .then(res => res.json())
+             .then(data => {
+                M.toast({ html: data.status });            
+                this.fetchCamiones();
+             })
+             .catch(err => console.log(err));
+        } 
+    }
+
     editCamion(id) {
         fetch(`/api/camiones/${id}`)
             .then(res => res.json())
@@ -258,6 +272,14 @@ class Maps extends Component {
                         <div className="card col s4 hoverable" style={{position:'sticky', top: '0'}}>
                             <h5>Mapa</h5>
                             <div style={{width: '100%', height: '300px', marginBottom: '10px'}} className="map"></div>                         
+                            { 
+                                this.state.type === 'ADMIN' ? 
+                                    <button className="btn red accent-4"  style={{margin:'5px'}} onClick={() => this.deleteAll()}>
+                                        Eliminar TODOS los camiones
+                                    </button>
+                                    :
+                                null 
+                            }
                         </div>
                     </div>
                 </div>
